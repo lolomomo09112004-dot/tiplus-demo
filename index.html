@@ -181,6 +181,10 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--teal);outline-offse
 @media (prefers-reduced-motion:reduce){.stamps i.inked,.stamps i.inked::after{animation:none}}
 .mk{margin:34px 0 0;display:flex;align-items:center;justify-content:center;gap:6px;font-size:.78rem;color:var(--muted);opacity:.75}
 .mkl{display:inline-flex;align-items:center;gap:4px;font-weight:800;letter-spacing:-.02em;color:#12807C}
+html,body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
+img,svg{-webkit-user-drag:none;user-drag:none}
+button,a,label,input,.pager{touch-action:manipulation}
 </style>
 </head>
 <body>
@@ -266,7 +270,9 @@ function brand(){return "<p class='mk'>Propulsé par <span class='mkl'><svg widt
 function greet(){var h=new Date().getHours();return h<12?'Bonjour':h<18?'Bon après-midi':'Bonsoir'}
 var hsw=null;
 function hswInit(){if(hsw)return;try{hsw=document.createElement('label');hsw.setAttribute('aria-hidden','true');hsw.style.cssText='position:fixed;left:-9999px;top:0;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none';var ci=document.createElement('input');ci.type='checkbox';ci.setAttribute('switch','');ci.tabIndex=-1;hsw.appendChild(ci);document.body.appendChild(hsw)}catch(e){hsw=null}}
-function hap(){try{if(navigator.vibrate){navigator.vibrate(12);return}}catch(e){}hswInit();try{if(hsw)hsw.click()}catch(e){}}
+var hlast=0;
+function hap(){var t=Date.now();if(t-hlast<80)return;hlast=t;try{if(navigator.vibrate){navigator.vibrate(12);return}}catch(e){}hswInit();try{if(hsw)hsw.click()}catch(e){}}
+document.addEventListener('click',function(e){if(hsw&&hsw.contains(e.target))return;var el=e.target.closest&&e.target.closest('button,a[href],label.mod,input[type=checkbox],input[type=color],.isl');if(el&&!(el.disabled))hap()},true);
 var itm;
 function stp(r){return "<div>✓ Commande reçue</div><div>"+(r?'✓':'●')+" En préparation</div><div>"+(r?'●':'○')+" Prête à retirer</div><button class='mini o' data-act='islhide' style='margin-top:10px'>Masquer</button>"}
 function track(num,time){clearTimeout(itm);var e=$('isl');e.hidden=false;e.className='isl';$('il1').textContent='N° '+num;$('il2').textContent='En préparation';$('stp').innerHTML=stp(0);var b=$('ibar');b.style.transition='none';b.style.width='0';void b.offsetWidth;b.style.transition='width 6s linear';b.style.width='100%';itm=setTimeout(function(){e.classList.add('ready');$('il2').textContent='Prête · '+time;$('stp').innerHTML=stp(1);hap();toast('Votre commande est prête !')},6000)}
