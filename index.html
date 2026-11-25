@@ -142,7 +142,7 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--teal);outline-offse
 @keyframes pulse{50%{opacity:.35}}
 .in>*{animation:up .5s cubic-bezier(.2,.8,.2,1) backwards}
 .in>*:nth-child(2){animation-delay:.05s}.in>*:nth-child(3){animation-delay:.1s}.in>*:nth-child(n+4){animation-delay:.15s}
-.top b{opacity:0;transform:translateY(4px);transition:opacity .25s,transform .25s}
+.top b{opacity:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .top.col b{opacity:1;transform:none}
 .nv{position:relative}
 .bdg{position:absolute;top:2px;left:calc(50% + 6px);min-width:20px;height:20px;border-radius:10px;background:var(--gold);color:var(--on-gold);font-size:.72rem;font-weight:700;display:grid;place-items:center;padding:0 5px}
@@ -185,6 +185,14 @@ html,body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-
 input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
 img,svg{-webkit-user-drag:none;user-drag:none}
 button,a,label,input,.pager{touch-action:manipulation}
+.fl{display:flex;flex-direction:column;gap:2px;font-weight:600;font-size:.9rem;margin-top:10px;color:var(--ink)}
+.fl .in2{margin-top:6px;font-weight:400}
+.ta{min-height:84px;padding:12px 16px;resize:vertical;line-height:1.4}
+.upl{position:relative;display:inline-flex;align-items:center;overflow:hidden}
+.upl input{position:absolute;inset:0;opacity:0;cursor:pointer}
+html.bigtxt{font-size:112.5%}
+.sq .hero,.sq .rcard,.sq .today,.sq .star,.sq .tile,.sq .ass,.sq .done,.sq .photo,.sq .ph,.sq .top,.sq .nav,.sq .btn,.sq .mini,.sq .slot,.sq .opt,.sq .q,.sq .seg,.sq .seg button,.sq .in2,.sq .nv,.sq .state,.sq .facts span,.sq .rb,.sq .sc-btn{border-radius:12px!important}
+.sq .stamps i{border-radius:10px}
 </style>
 </head>
 <body>
@@ -333,7 +341,7 @@ function setActive(i){curI=i;document.querySelectorAll('.nv').forEach(function(b
 function go(i){pg.scrollTo({left:i*pg.clientWidth,behavior:calm?'auto':'smooth'})}
 pg.addEventListener('scroll',function(){setActive(Math.max(0,Math.min(pages.length-1,Math.round(pg.scrollLeft/pg.clientWidth))))});
 pg.addEventListener('scroll',function(e){var t=e.target;if(t.classList&&t.classList.contains('pg'))$('top').classList.toggle('col',t.scrollTop>70)},true);
-function render(){var M=S.mods;
+function render(){var M=S.mods;S.ui=S.ui||{};var RT=document.documentElement;RT.classList.toggle('sq',S.ui.shape==='square');RT.classList.toggle('bigtxt',S.ui.tsize==='l');
 PS=S.products.map(function(p){return p.slice()});
 if(M.fournee&&S.fresh&&PS[0]){PS[0][3]=99;PS[0][4]=S.fresh}
 PI=-1;if(M.paniers&&M.precommande&&S.panier){PS.push(S.panier.slice());PI=PS.length-1}
@@ -401,14 +409,28 @@ try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environ
 if('BarcodeDetector' in window){var d=new BarcodeDetector({formats:['qr_code']});timer=setInterval(async function(){try{var r=await d.detect(v);if(r.length)done()}catch(e){}},500)}
 else $('scmsg').textContent='Lecture automatique indisponible ici. Utilisez « Simuler le scan ».'}
 catch(e){$('scmsg').textContent='Caméra indisponible dans cet aperçu. Utilisez « Simuler le scan ».'}}
-function cfg(){var mm=Object.keys(S.mods).filter(function(k){return S.mods[k]});return JSON.stringify({boutique:S.slug+'.tiplus.fr',modele:S.tpl,couleurs:{principale:S.theme.teal,accent:S.theme.gold},modules:mm,vocabulaire:{arrivage:S.lab.fournee}},null,1)}
+function escH(x){return String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function escA(x){return escH(x).replace(/'/g,'&#39;').replace(/"/g,'&quot;')}
+function unesc(x){return String(x||'').replace(/<br\s*\/?>/gi,' ').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&#39;/g,"'").replace(/&quot;/g,'"').replace(/&amp;/g,'&')}
+function setField(f,v){var e=escH(v.trim());if(f==='name'){S.name=e||'Ma boutique';S.title=S.name;return}var ks=f.split('.'),o=S;for(var i=0;i<ks.length-1;i++)o=o[ks[i]];o[ks[ks.length-1]]=e}
+function cfg(){var mm=Object.keys(S.mods).filter(function(k){return S.mods[k]});return JSON.stringify({boutique:S.slug+'.tiplus.fr',nom:unesc(S.name),modele:S.tpl,accueil:unesc(S.welcome),offre:unesc(S.hero.title),fidelite:{recompense:unesc(S.loy.reward),tampons:S.loy.n},couleurs:{principale:S.theme.teal,accent:S.theme.gold},forme:S.ui.shape||'round',texte:S.ui.tsize==='l'?'grand':'normal',photo:S.photo?'oui':'non',modules:mm,vocabulaire:{arrivage:S.lab.fournee}},null,1)}
 function cfgUI(){if(!$('cfg'))return;$('cfg').textContent=cfg();$('warn').textContent=ratio(S.theme.teal)<4.5?'Couleur principale trop claire : le texte blanc sera peu lisible.':''}
 function sheetUI(){var M=S.mods,nm={precommande:'Précommande',fournee:'Fournée / arrivage',paniers:'Panier du soir',surmesure:'Sur mesure',fidelite:'Fidélité',scan:'Scan caméra'};
 var h="<h3><span class='mkl' style='font-size:1.2rem'>"+"<svg width='22' height='22' viewBox='0 0 64 64' aria-hidden='true'><path d='M32 4C20 4 11 13 11 25c0 15 21 33 21 33s21-18 21-33C53 13 44 4 32 4z' fill='currentColor'></path><rect x='29' y='15' width='6' height='20' rx='3' fill='#fff'></rect><rect x='22' y='22' width='20' height='6' rx='3' fill='#fff'></rect></svg>"+"tiplus</span> console <small>(démo)</small></h3><p class='note' style='text-align:left;margin:0'>Changez de boutique, activez des services, modifiez les couleurs : l’application se met à jour tout de suite.</p><p class='lbl'>Boutique</p><div class='chips'>";
 Object.keys(SH).forEach(function(k){h+="<button class='opt g' data-act='shop' data-k='"+k+"' aria-pressed='"+(k===S.key)+"'>"+SH[k].eyebrow.split(' ·')[0]+"</button>"});
 h+="</div><p class='lbl'>Services activés</p><div class='mods'>";
 for(var k in nm)h+="<label class='mod'><input type='checkbox' data-mod='"+k+"'"+(M[k]?' checked':'')+"> "+nm[k]+"</label>";
-h+="</div><p class='lbl'>Couleurs</p><div class='cols'><label>Principale <input type='color' data-col='teal' value='"+S.theme.teal+"'></label><label>Accent <input type='color' data-col='gold' value='"+S.theme.gold+"'></label></div><p class='warn' id='warn'></p><p class='lbl'>Fiche de configuration</p><pre id='cfg'></pre><button class='btn t' data-act='sheetclose'>Fermer</button>";
+h+="</div><p class='lbl'>Textes</p>"
++"<label class='fl'>Nom de la boutique<input class='in2 g' id='cf-name' data-f='name' maxlength='40' value='"+escA(unesc(S.name))+"'></label>"
++"<label class='fl'>Phrase d’accueil<textarea class='in2 g ta' id='cf-wel' data-f='welcome' maxlength='160'>"+escH(unesc(S.welcome))+"</textarea></label>"
++"<label class='fl'>Offre du jour<input class='in2 g' id='cf-ht' data-f='hero.title' maxlength='60' value='"+escA(unesc(S.hero.title))+"'></label>"
++"<label class='fl'>Détail de l’offre<input class='in2 g' id='cf-hs' data-f='hero.sub' maxlength='60' value='"+escA(unesc(S.hero.sub))+"'></label>"
++"<label class='fl'>Récompense fidélité<input class='in2 g' id='cf-rw' data-f='loy.reward' maxlength='40' value='"+escA(unesc(S.loy.reward))+"'></label>"
++"<p class='lbl'>Photo d’accueil</p><div class='chips'><label class='opt g upl'>Choisir une photo<input type='file' id='cf-photo' accept='image/*'></label>"+(S.photo?"<button class='opt g' data-act='nophoto'>Retirer la photo</button>":"")+"</div>"
++"<p class='lbl'>Tampons pour la récompense</p><div class='step'><button class='q g' data-act='tm' aria-label='Moins de tampons'>−</button><b>"+S.loy.n+"</b><button class='q g' data-act='tp' aria-label='Plus de tampons'>+</button></div>"
++"<p class='lbl'>Forme</p><div class='chips'>"+[['round','Arrondie'],['square','Plus carrée']].map(function(o){return "<button class='opt g' data-act='shape' data-v='"+o[0]+"' aria-pressed='"+((S.ui.shape||'round')===o[0])+"'>"+o[1]+"</button>"}).join('')+"</div>"
++"<p class='lbl'>Taille du texte</p><div class='chips'>"+[['n','Normale'],['l','Grande']].map(function(o){return "<button class='opt g' data-act='tsize' data-v='"+o[0]+"' aria-pressed='"+((S.ui.tsize||'n')===o[0])+"'>"+o[1]+"</button>"}).join('')+"</div>";
+h+="<p class='lbl'>Couleurs</p><div class='cols'><label>Principale <input type='color' data-col='teal' value='"+S.theme.teal+"'></label><label>Accent <input type='color' data-col='gold' value='"+S.theme.gold+"'></label></div><p class='warn' id='warn'></p><p class='lbl'>Fiche de configuration</p><pre id='cfg'></pre><button class='btn t' data-act='sheetclose'>Fermer</button>";
 $('sheetc').innerHTML=h;cfgUI()}
 document.addEventListener('click',function(e){
 if(e.target.id==='sheet'){$('sheet').hidden=true;return}
@@ -443,10 +465,16 @@ else if(a==='sim'){hap();done()}
 else if(a==='cons'){sheetUI();$('sheet').hidden=false}
 else if(a==='sheetclose')$('sheet').hidden=true;
 else if(a==='shop'){pick(b.dataset.k);sheetUI()}
+else if(a==='nophoto'){S.photo=null;render();sheetUI()}
+else if(a==='tm'||a==='tp'){S.loy.n=Math.max(3,Math.min(10,S.loy.n+(a==='tp'?1:-1)));N=S.loy.n;n=Math.min(n,N);render();sheetUI()}
+else if(a==='shape'){S.ui.shape=b.dataset.v;render();sheetUI()}
+else if(a==='tsize'){S.ui.tsize=b.dataset.v;render();sheetUI()}
 });
-document.addEventListener('change',function(e){var t=e.target;if(t.dataset&&t.dataset.mod){S.mods[t.dataset.mod]=t.checked?1:0;render()}});
+document.addEventListener('change',function(e){var t=e.target;
+if(t.id==='cf-photo'&&t.files&&t.files[0]){var fr=new FileReader();fr.onload=function(){var im=new Image();im.onload=function(){var mx=900,sc=Math.min(1,mx/Math.max(im.width,im.height)),cv=document.createElement('canvas');cv.width=Math.round(im.width*sc);cv.height=Math.round(im.height*sc);cv.getContext('2d').drawImage(im,0,0,cv.width,cv.height);S.photo=cv.toDataURL('image/jpeg',.85);render();sheetUI();toast('Photo mise à jour')};im.onerror=function(){toast('Cette image ne peut pas être lue. Essayez une photo JPEG ou PNG.')};im.src=fr.result};fr.readAsDataURL(t.files[0]);return}if(t.dataset&&t.dataset.mod){S.mods[t.dataset.mod]=t.checked?1:0;render()}});
 document.addEventListener('input',function(e){var t=e.target;
 if(t.dataset&&t.dataset.col){var c=t.value,r=rgb(c);if(t.dataset.col==='teal'){S.theme.teal=c;S.theme.h1=c;S.theme.h2=lighten(c,.35);S.theme.glowA='rgba('+r+',.4)';S.theme.shc='rgba('+r+',.22)'}else{S.theme.gold=c;S.theme.goldglow='rgba('+r+',.55)';S.theme.ongold=lum(c)>.4?'#2A1A00':'#FFFFFF'}applyTheme();cfgUI()}
+else if(t.dataset&&t.dataset.f){setField(t.dataset.f,t.value);render();cfgUI()}
 else if(t.id==='cname')drawC()});
 pick('boulangerie');
 </script>
