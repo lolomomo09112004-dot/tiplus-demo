@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#12807C" id="tc">
+<meta name="theme-color" content="#DDF4EE" id="tc">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
 <meta name="apple-mobile-web-app-title" content="Seb &amp; Nico">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>Tiplus · démo multi-boutiques</title>
 <style>
 :root{--ink:#0B3533;--muted:#3E6663;--teal:#12807C;--on-teal:#fff;--gold:#F2B33D;--on-gold:#3A2500;--glass:rgba(255,255,255,.55);--edge:rgba(255,255,255,.9);--line:rgba(11,53,51,.12);--shadow:0 10px 30px var(--shc,rgba(18,128,124,.2));color-scheme:light}
@@ -194,7 +194,7 @@ button,a,label,input,.pager{touch-action:manipulation}
 html.bigtxt{font-size:112.5%}
 .sq .hero,.sq .rcard,.sq .today,.sq .star,.sq .tile,.sq .ass,.sq .done,.sq .photo,.sq .ph,.sq .top,.sq .nav,.sq .btn,.sq .mini,.sq .slot,.sq .opt,.sq .q,.sq .seg,.sq .seg button,.sq .in2,.sq .nv,.sq .state,.sq .facts span,.sq .rb,.sq .sc-btn{border-radius:12px!important}
 .sq .stamps i{border-radius:10px}
-body::before{content:'';position:fixed;z-index:8;left:0;right:0;top:0;height:env(safe-area-inset-top,0px);background:var(--teal);box-shadow:0 4px 14px var(--shc,rgba(18,128,124,.25));pointer-events:none}
+html{background:linear-gradient(180deg,var(--bg1),var(--bg2)) fixed;background-color:var(--bg2)}
 </style>
 </head>
 <body>
@@ -299,7 +299,7 @@ function rgb(h){var v=parseInt(h.slice(1),16);return[v>>16,(v>>8)&255,v&255]}
 function lum(h){var c=rgb(h).map(function(v){v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)});return .2126*c[0]+.7152*c[1]+.0722*c[2]}
 function ratio(h){return 1.05/(lum(h)+.05)}
 function lighten(h,t){return '#'+rgb(h).map(function(v){return ('0'+Math.round(v+(255-v)*t).toString(16)).slice(-2)}).join('')}
-function applyTheme(){var r=document.documentElement.style,t=S.theme;for(var k in t)r.setProperty(k==='ongold'?'--on-gold':'--'+k,t[k]);var m=document.getElementById('tc');if(m)m.setAttribute('content',t.teal)}
+function applyTheme(){var r=document.documentElement.style,t=S.theme;for(var k in t)r.setProperty(k==='ongold'?'--on-gold':'--'+k,t[k]);var m=document.getElementById('tc');if(m)m.setAttribute('content',t.bg1)}
 function stateNow(){var now=new Date(),dy=now.getDay(),hr=now.getHours()+now.getMinutes()/60,H=S.H,o=H[dy]&&hr>=H[dy][0]&&hr<H[dy][1];
 function nxt(){if(H[dy]&&hr<H[dy][0])return 'ouvre à '+f(H[dy][0]);for(var k=1;k<8;k++){var d=(dy+k)%7;if(H[d])return 'rouvre '+(k===1?'demain':D[d].toLowerCase())+' à '+f(H[d][0])}return ''}
 return{o:o,t:o?'Ouvert · ferme à '+f(H[dy][1]):'Fermé · '+nxt(),dy:dy}}
