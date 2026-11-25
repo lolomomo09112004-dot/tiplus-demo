@@ -444,6 +444,6 @@ if(t.dataset&&t.dataset.col){var c=t.value,r=rgb(c);if(t.dataset.col==='teal'){S
 else if(t.id==='cname')drawC()});
 pick('boulangerie');
 </script>
-<script>if('serviceWorker' in navigator)addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})</script>
+<script>if('serviceWorker' in navigator)addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(function(r){r.update()}).catch(function(){})})</script>
 </body>
 </html>
