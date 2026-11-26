@@ -254,6 +254,13 @@ h1,h2{text-shadow:0 1px 0 rgba(255,255,255,.7),0 3px 10px rgba(11,53,51,.12)}
 .rw-code{margin:0}.rw-code b{font-size:1.4rem;letter-spacing:.06em;color:var(--teal)}
 .cf{position:fixed;z-index:41;width:9px;height:14px;border-radius:2px;pointer-events:none}
 @media (prefers-reduced-motion:reduce){.rw-rays{animation:none}.rw-card{animation:none}}
+/* Solution 2 : barre flottante, fond uni en bas */
+html .nav,html.gapfix .nav{left:50%!important;right:auto!important;transform:translateX(-50%)!important;width:min(92%,440px)!important;bottom:calc(12px + env(safe-area-inset-bottom,0px))!important;border-radius:34px!important;border:1px solid rgba(255,255,255,.3)!important;padding:8px!important}
+html.gapfix .nav{bottom:12px!important}
+.nav::after{display:none!important}
+.nav.g{box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 12px 30px var(--shc,rgba(18,128,124,.3))!important}
+html,html.gapfix{background:var(--bg2)!important;background-color:var(--bg2)!important}
+body{background:radial-gradient(420px 360px at -8% 42%,rgba(255,255,255,.9),transparent 70%),radial-gradient(380px 360px at 108% 50%,var(--glowA),transparent 70%),linear-gradient(180deg,var(--bg1) 0,var(--bg1) 120px,var(--bg2) 72%,var(--bg2))!important;background-attachment:fixed!important}
 </style>
 </head>
 <body>
@@ -563,16 +570,5 @@ pick('boulangerie');
 <script>if('serviceWorker' in navigator)addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(function(r){r.update()}).catch(function(){})})</script>
 <script>(function(){function no(e){e.preventDefault()}['gesturestart','gesturechange','gestureend'].forEach(function(n){document.addEventListener(n,no,{passive:false})});document.addEventListener('touchmove',function(e){if(e.touches&&e.touches.length>1)e.preventDefault()},{passive:false});document.addEventListener('touchmove',function(e){if(typeof e.scale==='number'&&e.scale!==1)e.preventDefault()},{passive:false})})()</script>
 <script>(function(){var R=document.documentElement;function fix(){var sa=navigator.standalone||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches),g=0;if(sa&&window.innerHeight>window.innerWidth){var full=Math.max(screen.width,screen.height);g=full-window.innerHeight;if(g<0||g>90)g=0}R.style.setProperty('--gap',g+'px');R.classList.toggle('gapfix',g>0)}fix();addEventListener('resize',fix);addEventListener('orientationchange',function(){setTimeout(fix,300)});if(window.visualViewport)visualViewport.addEventListener('resize',fix);addEventListener('pageshow',fix);document.addEventListener('visibilitychange',fix)})()</script>
-<script>(function(){var vm=document.querySelector('meta[name=viewport]');if(!vm)return;var base=vm.getAttribute('content'),busy=false;
-function sa(){return navigator.standalone||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)}
-function gap(){if(!sa()||window.innerHeight<=window.innerWidth)return 0;var g=Math.max(screen.width,screen.height)-window.innerHeight;return g>0&&g<=90?g:0}
-function nudge(){if(busy||!gap())return;busy=true;
-vm.setAttribute('content','width=device-width, initial-scale=1.02, minimum-scale=1, maximum-scale=1.02, user-scalable=yes, viewport-fit=cover');
-setTimeout(function(){vm.setAttribute('content','width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=yes, viewport-fit=cover');
-setTimeout(function(){vm.setAttribute('content',base);window.scrollTo(0,0);window.dispatchEvent(new Event('resize'));busy=false},120)},120)}
-function run(){[250,900,2200].forEach(function(t){setTimeout(nudge,t)})}
-if(document.readyState==='complete')run();else addEventListener('load',run);
-addEventListener('pageshow',run);document.addEventListener('visibilitychange',function(){if(!document.hidden)run()});
-addEventListener('orientationchange',function(){setTimeout(nudge,500)})})()</script>
 </body>
 </html>
