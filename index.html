@@ -563,5 +563,16 @@ pick('boulangerie');
 <script>if('serviceWorker' in navigator)addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(function(r){r.update()}).catch(function(){})})</script>
 <script>(function(){function no(e){e.preventDefault()}['gesturestart','gesturechange','gestureend'].forEach(function(n){document.addEventListener(n,no,{passive:false})});document.addEventListener('touchmove',function(e){if(e.touches&&e.touches.length>1)e.preventDefault()},{passive:false});document.addEventListener('touchmove',function(e){if(typeof e.scale==='number'&&e.scale!==1)e.preventDefault()},{passive:false})})()</script>
 <script>(function(){var R=document.documentElement;function fix(){var sa=navigator.standalone||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches),g=0;if(sa&&window.innerHeight>window.innerWidth){var full=Math.max(screen.width,screen.height);g=full-window.innerHeight;if(g<0||g>90)g=0}R.style.setProperty('--gap',g+'px');R.classList.toggle('gapfix',g>0)}fix();addEventListener('resize',fix);addEventListener('orientationchange',function(){setTimeout(fix,300)});if(window.visualViewport)visualViewport.addEventListener('resize',fix);addEventListener('pageshow',fix);document.addEventListener('visibilitychange',fix)})()</script>
+<script>(function(){var vm=document.querySelector('meta[name=viewport]');if(!vm)return;var base=vm.getAttribute('content'),busy=false;
+function sa(){return navigator.standalone||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)}
+function gap(){if(!sa()||window.innerHeight<=window.innerWidth)return 0;var g=Math.max(screen.width,screen.height)-window.innerHeight;return g>0&&g<=90?g:0}
+function nudge(){if(busy||!gap())return;busy=true;
+vm.setAttribute('content','width=device-width, initial-scale=1.02, minimum-scale=1, maximum-scale=1.02, user-scalable=yes, viewport-fit=cover');
+setTimeout(function(){vm.setAttribute('content','width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=yes, viewport-fit=cover');
+setTimeout(function(){vm.setAttribute('content',base);window.scrollTo(0,0);window.dispatchEvent(new Event('resize'));busy=false},120)},120)}
+function run(){[250,900,2200].forEach(function(t){setTimeout(nudge,t)})}
+if(document.readyState==='complete')run();else addEventListener('load',run);
+addEventListener('pageshow',run);document.addEventListener('visibilitychange',function(){if(!document.hidden)run()});
+addEventListener('orientationchange',function(){setTimeout(nudge,500)})})()</script>
 </body>
 </html>
