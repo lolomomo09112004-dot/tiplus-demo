@@ -2,14 +2,14 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#DDF4EE" id="tc">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#12807C" id="tc">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
 <meta name="apple-mobile-web-app-title" content="Seb &amp; Nico">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Tiplus · démo multi-boutiques</title>
 <style>
 :root{--ink:#0B3533;--muted:#3E6663;--teal:#12807C;--on-teal:#fff;--gold:#F2B33D;--on-gold:#3A2500;--glass:rgba(255,255,255,.55);--edge:rgba(255,255,255,.9);--line:rgba(11,53,51,.12);--shadow:0 10px 30px var(--shc,rgba(18,128,124,.2));color-scheme:light}
@@ -206,6 +206,14 @@ html{background:linear-gradient(180deg,var(--bg1) 0,var(--bg1) 120px,var(--bg2))
 .nav .nv{min-height:60px}
 html{min-height:100%;min-height:100dvh}
 .pager{bottom:0;height:100%;height:100dvh}
+.top{left:0!important;right:0;top:0!important;transform:none!important;width:100%!important;border-radius:0 0 26px 26px!important;border-top:0!important;padding:calc(8px + env(safe-area-inset-top,0px)) max(10px,calc((100% - 480px)/2)) 10px max(20px,calc((100% - 460px)/2))!important}
+.top.g{background:var(--teal);background:color-mix(in srgb,var(--teal) 82%,transparent);border:1px solid rgba(255,255,255,.28);box-shadow:0 10px 28px var(--shc,rgba(18,128,124,.25)),inset 0 -1px 0 rgba(255,255,255,.3)}
+.top b{color:#FFFFFF}
+.top .rb{background:rgba(255,255,255,.2);color:#FFFFFF;box-shadow:inset 0 1px 0 rgba(255,255,255,.35)}
+.pg{padding-top:calc(96px + env(safe-area-inset-top,0px))!important}
+.isl{top:calc(84px + env(safe-area-inset-top,0px))!important}
+.nav{padding-bottom:max(10px,calc(env(safe-area-inset-bottom,0px) - 8px))!important}
+html,body{overscroll-behavior:none;touch-action:pan-x pan-y}
 </style>
 </head>
 <body>
@@ -310,7 +318,7 @@ function rgb(h){var v=parseInt(h.slice(1),16);return[v>>16,(v>>8)&255,v&255]}
 function lum(h){var c=rgb(h).map(function(v){v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)});return .2126*c[0]+.7152*c[1]+.0722*c[2]}
 function ratio(h){return 1.05/(lum(h)+.05)}
 function lighten(h,t){return '#'+rgb(h).map(function(v){return ('0'+Math.round(v+(255-v)*t).toString(16)).slice(-2)}).join('')}
-function applyTheme(){var r=document.documentElement.style,t=S.theme;for(var k in t)r.setProperty(k==='ongold'?'--on-gold':'--'+k,t[k]);var m=document.getElementById('tc');if(m)m.setAttribute('content',t.bg1)}
+function applyTheme(){var r=document.documentElement.style,t=S.theme;for(var k in t)r.setProperty(k==='ongold'?'--on-gold':'--'+k,t[k]);var m=document.getElementById('tc');if(m)m.setAttribute('content',t.teal)}
 function stateNow(){var now=new Date(),dy=now.getDay(),hr=now.getHours()+now.getMinutes()/60,H=S.H,o=H[dy]&&hr>=H[dy][0]&&hr<H[dy][1];
 function nxt(){if(H[dy]&&hr<H[dy][0])return 'ouvre à '+f(H[dy][0]);for(var k=1;k<8;k++){var d=(dy+k)%7;if(H[d])return 'rouvre '+(k===1?'demain':D[d].toLowerCase())+' à '+f(H[d][0])}return ''}
 return{o:o,t:o?'Ouvert · ferme à '+f(H[dy][1]):'Fermé · '+nxt(),dy:dy}}
@@ -494,5 +502,6 @@ else if(t.id==='cname')drawC()});
 pick('boulangerie');
 </script>
 <script>if('serviceWorker' in navigator)addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(function(r){r.update()}).catch(function(){})})</script>
+<script>(function(){function no(e){e.preventDefault()}['gesturestart','gesturechange','gestureend'].forEach(function(n){document.addEventListener(n,no,{passive:false})});document.addEventListener('touchmove',function(e){if(e.touches&&e.touches.length>1)e.preventDefault()},{passive:false});document.addEventListener('touchmove',function(e){if(typeof e.scale==='number'&&e.scale!==1)e.preventDefault()},{passive:false})})()</script>
 </body>
 </html>
