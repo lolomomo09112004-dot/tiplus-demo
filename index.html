@@ -202,6 +202,10 @@ html{background:linear-gradient(180deg,var(--bg1) 0,var(--bg1) 120px,var(--bg2))
 .nav .nv{color:rgba(255,255,255,.78)}
 .nav .nv[aria-current=page]{background:rgba(255,255,255,.22);color:#FFFFFF;box-shadow:inset 0 1px 0 rgba(255,255,255,.35)}
 .nav .sc-btn{box-shadow:0 10px 24px rgba(0,0,0,.22),0 0 0 6px rgba(255,255,255,.35)}
+.nav{padding-bottom:max(10px,calc(env(safe-area-inset-bottom,0px) - 12px))!important}
+.nav .nv{min-height:60px}
+html{min-height:100%;min-height:100dvh}
+.pager{bottom:0;height:100%;height:100dvh}
 </style>
 </head>
 <body>
@@ -289,7 +293,7 @@ var hsw=null;
 function hswInit(){if(hsw)return;try{hsw=document.createElement('label');hsw.setAttribute('aria-hidden','true');hsw.style.cssText='position:fixed;left:-9999px;top:0;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none';var ci=document.createElement('input');ci.type='checkbox';ci.setAttribute('switch','');ci.tabIndex=-1;hsw.appendChild(ci);document.body.appendChild(hsw)}catch(e){hsw=null}}
 var hlast=0;
 function hap(){var t=Date.now();if(t-hlast<80)return;hlast=t;try{if(navigator.vibrate){navigator.vibrate(12);return}}catch(e){}hswInit();try{if(hsw)hsw.click()}catch(e){}}
-document.addEventListener('click',function(e){if(hsw&&hsw.contains(e.target))return;var el=e.target.closest&&e.target.closest('button,a[href],label.mod,input[type=checkbox],input[type=color],.isl');if(el&&!(el.disabled))hap()},true);
+document.addEventListener('click',function(e){if(hsw&&hsw.contains(e.target))return;var el=e.target.closest&&e.target.closest('button,a[href],label.mod,input[type=checkbox],.isl');if(el&&!(el.disabled))hap()},true);
 var itm;
 function stp(r){return "<div>✓ Commande reçue</div><div>"+(r?'✓':'●')+" En préparation</div><div>"+(r?'●':'○')+" Prête à retirer</div><button class='mini o' data-act='islhide' style='margin-top:10px'>Masquer</button>"}
 function track(num,time){clearTimeout(itm);var e=$('isl');e.hidden=false;e.className='isl';$('il1').textContent='N° '+num;$('il2').textContent='En préparation';$('stp').innerHTML=stp(0);var b=$('ibar');b.style.transition='none';b.style.width='0';void b.offsetWidth;b.style.transition='width 6s linear';b.style.width='100%';itm=setTimeout(function(){e.classList.add('ready');$('il2').textContent='Prête · '+time;$('stp').innerHTML=stp(1);hap();toast('Votre commande est prête !')},6000)}
@@ -480,9 +484,11 @@ else if(a==='shape'){S.ui.shape=b.dataset.v;render();sheetUI()}
 else if(a==='tsize'){S.ui.tsize=b.dataset.v;render();sheetUI()}
 });
 document.addEventListener('change',function(e){var t=e.target;
+if(t.dataset&&t.dataset.col){setCol(t);return}
 if(t.id==='cf-photo'&&t.files&&t.files[0]){var fr=new FileReader();fr.onload=function(){var im=new Image();im.onload=function(){var mx=900,sc=Math.min(1,mx/Math.max(im.width,im.height)),cv=document.createElement('canvas');cv.width=Math.round(im.width*sc);cv.height=Math.round(im.height*sc);cv.getContext('2d').drawImage(im,0,0,cv.width,cv.height);S.photo=cv.toDataURL('image/jpeg',.85);render();sheetUI();toast('Photo mise à jour')};im.onerror=function(){toast('Cette image ne peut pas être lue. Essayez une photo JPEG ou PNG.')};im.src=fr.result};fr.readAsDataURL(t.files[0]);return}if(t.dataset&&t.dataset.mod){S.mods[t.dataset.mod]=t.checked?1:0;render()}});
+function setCol(t){var c=t.value,r=rgb(c);if(t.dataset.col==='teal'){S.theme.teal=c;S.theme.h1=c;S.theme.h2=lighten(c,.35);S.theme.glowA='rgba('+r+',.4)';S.theme.shc='rgba('+r+',.22)'}else{S.theme.gold=c;S.theme.goldglow='rgba('+r+',.55)';S.theme.ongold=lum(c)>.4?'#2A1A00':'#FFFFFF'}applyTheme();cfgUI()}
 document.addEventListener('input',function(e){var t=e.target;
-if(t.dataset&&t.dataset.col){var c=t.value,r=rgb(c);if(t.dataset.col==='teal'){S.theme.teal=c;S.theme.h1=c;S.theme.h2=lighten(c,.35);S.theme.glowA='rgba('+r+',.4)';S.theme.shc='rgba('+r+',.22)'}else{S.theme.gold=c;S.theme.goldglow='rgba('+r+',.55)';S.theme.ongold=lum(c)>.4?'#2A1A00':'#FFFFFF'}applyTheme();cfgUI()}
+if(t.dataset&&t.dataset.col){setCol(t)}
 else if(t.dataset&&t.dataset.f){setField(t.dataset.f,t.value);render();cfgUI()}
 else if(t.id==='cname')drawC()});
 pick('boulangerie');
