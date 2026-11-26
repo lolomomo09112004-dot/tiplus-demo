@@ -282,6 +282,7 @@ html.gapfix .fab-scan{bottom:100px}
 html .nav .nv{z-index:1;transition:color .25s}
 html .nav .nv[aria-current=page]{background:transparent!important;box-shadow:none!important;color:#FFFFFF}
 @media (prefers-reduced-motion:reduce){.nv-ind{transition:none}}
+.nv-ind{transition:opacity .2s!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;will-change:transform,width;background:rgba(255,255,255,.26)!important}
 </style>
 </head>
 <body>
@@ -470,7 +471,7 @@ $('p-home').innerHTML=homeHTML();$('p-loyalty').innerHTML=loyaltyHTML();$('p-inf
 var nv='';pages.forEach(function(p,i){
 nv+="<button class='nv' data-act='nav' data-i='"+i+"'><svg width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'>"+IC[p]+"</svg>"+NL[p]+(p==='order'?"<span class='bdg' id='bdg' hidden>0</span>":"")+"</button>"});
 $('nav').innerHTML="<span class='nv-ind' id='nvind' aria-hidden='true'></span>"+nv;$('nav').style.gridTemplateColumns='repeat('+pages.length+',1fr)';$('fab').hidden=!M.scan;
-upd();if(curI>=pages.length)curI=0;pg.scrollLeft=curI*pg.clientWidth;setActive(curI);requestAnimationFrame(function(){placeInd(curI)});
+upd();if(curI>=pages.length)curI=0;pg.scrollLeft=curI*pg.clientWidth;setActive(curI);requestAnimationFrame(function(){indSnap(curI)});
 if(!$('sheet').hidden)cfgUI()}
 function pick(k){S=clone(SH[k]);S.key=k;N=S.loy.n;won=0;hn=S.helper?Math.max(S.helper.min,6):0;Q=null;slot='';n=4;qd=false;cd=false;mode='q';ci=0;cn=0;cdate='';bellOn=false;curI=0;render();pg.scrollLeft=0}
 var tt;function toast(m){var t=$('toast');t.textContent=m;t.hidden=false;clearTimeout(tt);tt=setTimeout(function(){t.hidden=true},2600)}
@@ -587,14 +588,20 @@ document.addEventListener('input',function(e){var t=e.target;
 if(t.dataset&&t.dataset.col){setCol(t)}
 else if(t.dataset&&t.dataset.f){setField(t.dataset.f,t.value);render();cfgUI()}
 else if(t.id==='cname')drawC()});
-function placeInd(f){var ind=$('nvind'),nav=$('nav');if(!ind||!nav)return;var bs=nav.querySelectorAll('.nv');if(!bs.length)return;
-f=Math.max(0,Math.min(bs.length-1,f));var a=Math.floor(f),b=Math.min(bs.length-1,a+1),t=f-a;
-var na=nav.getBoundingClientRect(),ra=bs[a].getBoundingClientRect(),rb=bs[b].getBoundingClientRect();
-var x=ra.left+(rb.left-ra.left)*t-na.left,w=ra.width+(rb.width-ra.width)*t,s=calm?0:Math.sin(Math.PI*t);
-ind.style.top=(ra.top-na.top)+'px';ind.style.height=ra.height+'px';ind.style.width=w+'px';
-ind.style.transform='translateX('+x+'px) scale('+(1+s*.22)+','+(1-s*.12)+')';ind.style.opacity=1}
-pg.addEventListener('scroll',function(){placeInd(pg.scrollLeft/pg.clientWidth)},{passive:true});
-addEventListener('resize',function(){placeInd(pg.scrollLeft/pg.clientWidth)});
+var IND={x:0,w:0,v:0,tx:0,tw:0,y:8,h:60,raf:0,geo:[],lock:0};
+function indGeo(){var nav=$('nav');if(!nav)return;var na=nav.getBoundingClientRect();IND.geo=[].map.call(nav.querySelectorAll('.nv'),function(b){var r=b.getBoundingClientRect();return{x:r.left-na.left,w:r.width,y:r.top-na.top,h:r.height}})}
+function indTarget(f){var g=IND.geo;if(!g.length)return;f=Math.max(0,Math.min(g.length-1,f));var a=Math.floor(f),b=Math.min(g.length-1,a+1),t=f-a;IND.tx=g[a].x+(g[b].x-g[a].x)*t;IND.tw=g[a].w+(g[b].w-g[a].w)*t;IND.y=g[a].y;IND.h=g[a].h;indKick()}
+function indSnap(i){indGeo();indTarget(i);IND.x=IND.tx;IND.w=IND.tw;IND.v=0;indDraw(0)}
+function indDraw(st){var ind=$('nvind');if(!ind)return;ind.style.top=IND.y+'px';ind.style.height=IND.h+'px';ind.style.width=IND.w+'px';ind.style.transform='translate3d('+IND.x.toFixed(2)+'px,0,0) scale('+(1+st).toFixed(3)+','+(1-st*.45).toFixed(3)+')';ind.style.opacity=1}
+function indKick(){if(!IND.raf)IND.raf=requestAnimationFrame(indStep)}
+function indStep(){IND.raf=0;if(calm){IND.x=IND.tx;IND.w=IND.tw;IND.v=0;indDraw(0);return}
+IND.v=(IND.v+(IND.tx-IND.x)*.16)*.74;IND.x+=IND.v;IND.w+=(IND.tw-IND.w)*.25;
+var st=Math.min(.28,Math.abs(IND.v)/45);indDraw(st);
+if(Math.abs(IND.tx-IND.x)>.2||Math.abs(IND.v)>.2||Math.abs(IND.tw-IND.w)>.2)indKick();else{IND.x=IND.tx;IND.w=IND.tw;indDraw(0)}}
+pg.addEventListener('scroll',function(){if(Date.now()<IND.lock)return;indTarget(pg.scrollLeft/pg.clientWidth)},{passive:true});
+addEventListener('resize',function(){indSnap(Math.round(pg.scrollLeft/pg.clientWidth))});
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('#nav .nv');if(!b)return;IND.lock=Date.now()+650;indGeo();indTarget(+b.dataset.i)},true);
+pg.addEventListener('touchstart',function(){IND.lock=0},{passive:true});
 pick('boulangerie');
 </script>
 <script>if('serviceWorker' in navigator)addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(function(r){r.update()}).catch(function(){})})</script>
