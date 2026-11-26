@@ -299,10 +299,12 @@ html .nav .nv[aria-current=page]{background:transparent!important;box-shadow:non
 #splash.out{opacity:0;transform:scale(1.06);pointer-events:none}
 @keyframes spl{from{transform:scale(1)}to{transform:scale(1.05)}}
 @media (prefers-reduced-motion:reduce){#splash b{animation:none}}
+#splash .spl-in{display:flex;flex-direction:column;align-items:center;gap:2vw;animation:spl 1.1s ease-in-out infinite alternate}
+#splash .spl-in b{font-size:11.5vw;letter-spacing:-.03em;animation:none}
 </style>
 </head>
 <body>
-<div id="splash" aria-hidden="true"><b>T<span>+</span></b></div>
+<div id="splash" aria-hidden="true"><div class="spl-in"><svg viewBox="0 0 64 64" width="30vw" height="30vw" aria-hidden="true"><path d="M32 4C20 4 11 13 11 25c0 15 21 33 21 33s21-18 21-33C53 13 44 4 32 4z" fill="#FFFFFF"></path><rect x="29" y="15" width="6" height="20" rx="3" fill="#0B4F4C"></rect><rect x="22" y="22" width="20" height="6" rx="3" fill="#0B4F4C"></rect></svg><b>tiplus</b></div></div>
 <header class="top g" id="top"><b id="shopname"></b>
 <button class="rb" data-act="cons" aria-label="Console Tiplus"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></button>
 <a class="rb" href="tel:+33200000000" aria-label="Appeler"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg></a>
