@@ -273,6 +273,11 @@ html .sc-btn{background:rgba(255,255,255,.1)!important;backdrop-filter:blur(2px)
 html .sc-btn svg{filter:drop-shadow(0 1px 3px rgba(0,0,0,.45))}
 html .sc-btn{margin-top:-58px!important;position:relative;z-index:2;align-self:start}
 html .nav{overflow:visible!important}
+.fab-scan{position:fixed;z-index:6;right:max(16px,calc(env(safe-area-inset-right,0px) + 16px));bottom:calc(86px + env(safe-area-inset-bottom,0px));width:62px;height:62px;border-radius:50%;display:grid;place-items:center;cursor:pointer;color:var(--teal);background:rgba(255,255,255,.32);backdrop-filter:blur(10px) saturate(180%);-webkit-backdrop-filter:blur(10px) saturate(180%);border:1.5px solid rgba(255,255,255,.85);box-shadow:inset 0 1px 0 rgba(255,255,255,.9),inset 0 -3px 8px rgba(11,53,51,.08),0 8px 22px rgba(11,53,51,.14);transition:transform .15s}
+html.gapfix .fab-scan{bottom:100px}
+.fab-scan:active{transform:scale(.92)}
+.fab-scan:focus-visible{outline:3px solid var(--teal);outline-offset:3px}
+.fab-scan svg{filter:drop-shadow(0 1px 1px rgba(255,255,255,.8))}
 </style>
 </head>
 <body>
@@ -290,6 +295,7 @@ html .nav{overflow:visible!important}
 <section class="pg" data-p="info"><div class="in" id="p-info"></div></section>
 </div>
 <nav class="nav g" id="nav" aria-label="Navigation"></nav>
+<button class="fab-scan" id="fab" data-act="scan" aria-label="Scanner un code en caisse"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></button>
 <div class="toast" id="toast" role="status" hidden></div>
 <div class="isl" id="isl" hidden role="status" aria-live="polite"><div class="il"><span class="dot"></span><b id="il1"></b><span id="il2"></span></div><div class="ib"><i id="ibar"></i></div><div class="steps" id="stp"></div></div>
 <div class="sc" id="sc" hidden><video id="vid" playsinline muted></video><div class="frame"></div><div class="ctl"><p id="scmsg"></p><div class="row"><button class="btn" data-act="close">Fermer</button><button class="btn o" data-act="sim">Simuler le scan</button></div></div></div>
@@ -457,9 +463,9 @@ applyTheme();document.title=S.name.replace('&amp;','&')+' · démo Tiplus';
 $('shopname').innerHTML=S.name;$('route').href='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(S.address);
 document.querySelectorAll('.pg').forEach(function(p){p.hidden=pages.indexOf(p.dataset.p)<0});
 $('p-home').innerHTML=homeHTML();$('p-loyalty').innerHTML=loyaltyHTML();$('p-info').innerHTML=infoHTML();fillOrder();stamps();
-var nv='';pages.forEach(function(p,i){if(M.scan&&i===Math.ceil(pages.length/2))nv+="<button class='sc-btn' data-act='scan' aria-label='Scanner'><svg width='26' height='26' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M4 8h3l2-3h6l2 3h3v11H4z'/><circle cx='12' cy='13' r='3.5'/></svg></button>";
+var nv='';pages.forEach(function(p,i){
 nv+="<button class='nv' data-act='nav' data-i='"+i+"'><svg width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'>"+IC[p]+"</svg>"+NL[p]+(p==='order'?"<span class='bdg' id='bdg' hidden>0</span>":"")+"</button>"});
-$('nav').innerHTML=nv;$('nav').style.gridTemplateColumns='repeat('+(pages.length+(M.scan?1:0))+',1fr)';
+$('nav').innerHTML=nv;$('nav').style.gridTemplateColumns='repeat('+pages.length+',1fr)';$('fab').hidden=!M.scan;
 upd();if(curI>=pages.length)curI=0;pg.scrollLeft=curI*pg.clientWidth;setActive(curI);
 if(!$('sheet').hidden)cfgUI()}
 function pick(k){S=clone(SH[k]);S.key=k;N=S.loy.n;won=0;hn=S.helper?Math.max(S.helper.min,6):0;Q=null;slot='';n=4;qd=false;cd=false;mode='q';ci=0;cn=0;cdate='';bellOn=false;curI=0;render();pg.scrollLeft=0}
